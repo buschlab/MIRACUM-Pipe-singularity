@@ -1,0 +1,38 @@
+Bootstrap: library
+From: debian:10
+
+%post
+
+#MIRACUM-Pipe Version
+export VERSION=cc6c727b32f05e23285333479d4a74b8404283dc
+
+# install git
+apt-get update
+apt-get install -y --no-install-recommends git ca-certificates wget libcairo2-dev libxt-dev
+
+# git MIRACUM-Pipe with submodules from GitHub
+git clone --recurse-submodules https://github.com/AG-Boerries/MIRACUM-Pipe.git /opt/MIRACUM-Pipe
+cd /opt/MIRACUM-Pipe
+git checkout $VERSION
+
+# Delete databases, they will be imported using overlay
+rm -rf /opt/MIRACUM-Pipe/databases/*
+
+# Call install routines
+bash /opt/MIRACUM-Pipe/debian/setup.sh
+Rscript /opt/MIRACUM-Pipe/RScripts/install_packages.R
+bash /opt/MIRACUM-Pipe/tools/install.sh
+
+# CA Certificates for RCurl
+wget https://curl.haxx.se/ca/cacert.pem -O "/usr/local/lib/R/site-library/RCurl/CurlSSL/ca-bundle.crt"
+
+# Final cleanup
+apt-get remove wget git -y
+apt-get clean autoclean
+apt-get autoremove --yes
+rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+%labels
+
+Author n.reimer@uni-luebeck.de
+Version 1.0

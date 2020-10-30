@@ -1,0 +1,22 @@
+# Tools
+tools/*
+!tools/*/.gitkeep
+
+# Databases
+databases/dbSNP/*
+!databases/dbSNP/.gitkeep
+databases/fannsdb*
+databases/h.all.*
+databases/hallmarks*
+databases/hotspots_v2.xls
+
+# Singularity Container
+*.sif
+
+# Assets
+assets/*
+!assets/*/.gitkeep
+
+# COSMIC
+*.vcf
+*.tsv
