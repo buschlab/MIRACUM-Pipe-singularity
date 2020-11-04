@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 readonly DIR_MIRACUM="/opt/MIRACUM-Pipe"
+readonly SCRIPTPATH="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
@@ -12,7 +13,7 @@ function usage() {
   exit 1
 }
 
-IMAGE_FILE="miracum-pipe.sif"
+IMAGE_FILE="${SCRIPTPATH}/miracum-pipe.sif"
 readonly VALID_PROTOCOLS=("wes panel tumorOnly")
 
 while getopts t:p:d:n:fsh option; do
@@ -54,7 +55,7 @@ fi
 
 # conf as volume
 if [[ -d $(pwd)/conf ]]; then
-  readonly VOLUME_CONF="$(pwd)/conf/custom.yaml:${DIR_MIRACUM}/conf/custom.yaml,"
+  readonly VOLUME_CONF="${SCRIPTPATH}/conf/custom.yaml:${DIR_MIRACUM}/conf/custom.yaml,"
 fi
 
 # call script
@@ -82,9 +83,11 @@ echo "running \"${DIR_MIRACUM}/miracum_pipe.sh ${opt_args}\" of image ${IMAGE_FI
 echo "---"
 singularity exec --bind \
 ${VOLUME_CONF}\
-$(pwd)/assets:${DIR_MIRACUM}/assets,\
-$(pwd)/tools/annovar:${DIR_MIRACUM}/tools/annovar,\
-$(pwd)/tools/gatk:${DIR_MIRACUM}/tools/gatk,\
-$(pwd)/databases:${DIR_MIRACUM}/databases\
+$(pwd)/assets/input:${DIR_MIRACUM}/assets/input,\
+$(pwd)/assets/output:${DIR_MIRACUM}/assets/output,\
+${SCRIPTPATH}/assets/references:${DIR_MIRACUM}/assets/references,\
+${SCRIPTPATH}/tools/annovar:${DIR_MIRACUM}/tools/annovar,\
+${SCRIPTPATH}/tools/gatk:${DIR_MIRACUM}/tools/gatk,\
+${SCRIPTPATH}/databases:${DIR_MIRACUM}/databases\
  ${IMAGE_FILE}\
  "${DIR_MIRACUM}/miracum_pipe.sh" ${opt_args}
