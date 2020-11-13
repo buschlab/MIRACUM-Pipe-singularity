@@ -1,0 +1,41 @@
+Bootstrap: localimage
+From: ./miracum-pipe.sif
+
+%post
+
+# remove directories that will be replaced by symbolic link
+rm /opt/MIRACUM-Pipe/conf/custom.yaml
+chmod 777 /opt/MIRACUM-Pipe/conf
+rm -rf /opt/MIRACUM-Pipe/assets/*
+chmod 777 /opt/MIRACUM-Pipe/assets
+rm -rf /opt/MIRACUM-Pipe/databases
+chmod 777 /opt/MIRACUM-Pipe
+rm -rf /opt/MIRACUM-Pipe/tools/annovar
+rm -rf /opt/MIRACUM-Pipe/tools/gatk
+chmod 777 /opt/MIRACUM-Pipe/tools
+
+apt-get clean autoclean
+apt-get autoremove --yes
+rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+%runscript
+
+echo "preparing container by setting symbolic links:"
+echo $INPUTPATH
+echo $OUTPUTPATH
+echo $REFERENCESPATH
+echo $DATABASEPATH
+echo $ANNOVARPATH
+echo $GATKPATH
+
+# set symbolic links
+ln -s $CUSTOMCONFIGFILE /opt/MIRACUM-Pipe/conf/custom.yaml
+ln -s $INPUTPATH /opt/MIRACUM-Pipe/assets/input
+ln -s $OUTPUTPATH /opt/MIRACUM-Pipe/assets/output
+ln -s $REFERENCESPATH /opt/MIRACUM-Pipe/assets/references
+ln -sf $DATABASEPATH /opt/MIRACUM-Pipe/databases
+ln -sf $ANNOVARPATH /opt/MIRACUM-Pipe/tools/annovar
+ln -sf $GATKPATH /opt/MIRACUM-Pipe/tools/gatk
+
+# start MIRACUM-Pipe with passed arguments
+/opt/MIRACUM-Pipe/miracum_pipe.sh $OPTARGS
