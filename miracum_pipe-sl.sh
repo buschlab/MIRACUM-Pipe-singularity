@@ -82,6 +82,7 @@ export SINGULARITYENV_DATABASEPATH=${SCRIPTPATH}/databases
 export SINGULARITYENV_ANNOVARPATH=${SCRIPTPATH}/tools/annovar
 export SINGULARITYENV_GATKPATH=${SCRIPTPATH}/tools/gatk
 export SINGULARITYENV_OPTARGS=${opt_args}
+export SINGULARITYENV_SCRATCH=${SCRATCH}
 
 echo "running \"${DIR_MIRACUM}/miracum_pipe.sh ${opt_args}\" of image ${IMAGE_FILE}"
 echo "---"
