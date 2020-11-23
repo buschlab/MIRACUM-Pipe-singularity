@@ -4,7 +4,7 @@ From: debian:10
 %post
 
 #MIRACUM-Pipe Version
-export VERSION=cc6c727b32f05e23285333479d4a74b8404283dc
+export VERSION=fd9573788385983b36696e71c8e69255e4b614a5
 
 # install git
 apt-get update
