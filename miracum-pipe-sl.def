@@ -24,6 +24,7 @@ rm /programs.cfg.sh
 chmod +x /opt/MIRACUM-Pipe/programs.cfg.sh
 rm /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
 cp /MutAna_tools.R /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
+rm /MutAna_tools.R
 
 apt-get clean autoclean
 apt-get autoremove --yes
