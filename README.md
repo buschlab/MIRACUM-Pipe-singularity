@@ -295,6 +295,23 @@ In `conf/custom.yaml` one can setup ressource parameters as cpucores and memory.
 
 **BEWARE**: if you set tmp to be a tempfs (into ram), please consider this, while deciding the process ressources.
 
+## Used annotation databases
+
+The following annotation databases are used during runtime of MIRACUM-Pipe. The default set could be easily extended.
+
+- refGene
+- dbNSFP v4.1a
+- gnomAD v2.1.1 (Genome)
+- dbSNP
+- ClinVar
+- InterVar
+- COSMIC v91
+- OncoKB
+  - Actionalbe Genes
+  - Cancer Genes
+- FANNSDB (Condel)
+- TARGET DB
+
 ## Limitations
 
 MIRACUM-Pipe is currently test for the whole-exome protocol for the capture kits V5UTR and V6. The tool used for mutation signature analysis is currently only compatible with the following kits:
