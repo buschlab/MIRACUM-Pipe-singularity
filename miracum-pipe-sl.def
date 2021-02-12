@@ -1,5 +1,5 @@
 Bootstrap: localimage
-From: ./miracum-pipe.sif
+From: ./miracum-pipe-rna.sif
 
 %files
 
@@ -48,6 +48,7 @@ ln -s $REFERENCESPATH /opt/MIRACUM-Pipe/assets/references
 ln -s $DATABASEPATH /opt/MIRACUM-Pipe/databases
 ln -s $ANNOVARPATH /opt/MIRACUM-Pipe/tools/annovar
 ln -s $GATKPATH /opt/MIRACUM-Pipe/tools/gatk
+ln -s $FUSIONCATCHERPATH /opt/MIRACUM-Pipe/tools/fusioncatcher/data
 ln -s $SCRATCH /myscratch
 
 # start MIRACUM-Pipe with passed arguments

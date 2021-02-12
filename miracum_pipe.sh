@@ -9,11 +9,11 @@ function usage() {
   singularity exec $1 "${DIR_MIRACUM}"/miracum_pipe.sh -h
   echo ""
   echo "additional optional flags:"
-  echo "  -n                    singularity image file (default is miracum-pipe.sif)"
+  echo "  -n                    singularity image file (default is miracum-pipe-sl.sif)"
   exit 1
 }
 
-IMAGE_FILE="${SCRIPTPATH}/miracum-pipe.sif"
+IMAGE_FILE="${SCRIPTPATH}/miracum-pipe-sl.sif"
 readonly VALID_PROTOCOLS=("wes panel tumorOnly")
 
 while getopts t:p:d:n:fsh option; do
@@ -53,11 +53,6 @@ elif [[ -z "${PARAM_PROTOCOL}" ]]; then
   exit 1
 fi
 
-# conf as volume
-if [[ -d $(pwd)/conf ]]; then
-  readonly VOLUME_CONF="${SCRIPTPATH}/conf/custom.yaml:${DIR_MIRACUM}/conf/custom.yaml,"
-fi
-
 # call script
 if [[ "${PARAM_FORCED}" ]]; then
   opt_args='-f'
@@ -79,15 +74,17 @@ if [[ "${PARAM_DIR_PATIENT}" ]]; then
   opt_args="${opt_args} -d ${PARAM_DIR_PATIENT}"
 fi
 
+export SINGULARITYENV_CUSTOMCONFIGFILE=${SCRIPTPATH}/conf/custom.yaml
+export SINGULARITYENV_INPUTPATH=$(pwd)/assets/input
+export SINGULARITYENV_OUTPUTPATH=$(pwd)/assets/output
+export SINGULARITYENV_REFERENCESPATH=${SCRIPTPATH}/assets/references
+export SINGULARITYENV_DATABASEPATH=${SCRIPTPATH}/databases
+export SINGULARITYENV_ANNOVARPATH=${SCRIPTPATH}/tools/annovar
+export SINGULARITYENV_GATKPATH=${SCRIPTPATH}/tools/gatk
+export SINGULARITYENV_FUSIONCATCHERPATH=${SCRIPTPATH}/tools/fusioncatcher/data
+export SINGULARITYENV_OPTARGS=${opt_args}
+export SINGULARITYENV_SCRATCH=${SCRATCH}
+
 echo "running \"${DIR_MIRACUM}/miracum_pipe.sh ${opt_args}\" of image ${IMAGE_FILE}"
 echo "---"
-singularity exec --bind \
-${VOLUME_CONF}\
-$(pwd)/assets/input:${DIR_MIRACUM}/assets/input,\
-$(pwd)/assets/output:${DIR_MIRACUM}/assets/output,\
-${SCRIPTPATH}/assets/references:${DIR_MIRACUM}/assets/references,\
-${SCRIPTPATH}/tools/annovar:${DIR_MIRACUM}/tools/annovar,\
-${SCRIPTPATH}/tools/gatk:${DIR_MIRACUM}/tools/gatk,\
-${SCRIPTPATH}/databases:${DIR_MIRACUM}/databases\
- ${IMAGE_FILE}\
- "${DIR_MIRACUM}/miracum_pipe.sh" ${opt_args}
+singularity run --writable-tmpfs ${IMAGE_FILE}

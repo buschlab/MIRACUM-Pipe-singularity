@@ -1,10 +1,16 @@
 Bootstrap: library
 From: debian:10
 
+%files
+
+./programs.cfg.sh
+./MutAna_tools.R
+
 %post
 
 #MIRACUM-Pipe Version
-export VERSION=fd9573788385983b36696e71c8e69255e4b614a5
+#export VERSION=fd9573788385983b36696e71c8e69255e4b614a5
+export VERSION=2f5cda50c9ec3ce19754c2b5f15f5a3e930dcaea
 
 # install git
 apt-get update
@@ -26,13 +32,55 @@ bash /opt/MIRACUM-Pipe/tools/install.sh
 # CA Certificates for RCurl
 wget https://curl.haxx.se/ca/cacert.pem -O "/usr/local/lib/R/site-library/RCurl/CurlSSL/ca-bundle.crt"
 
+# remove directories that will be replaced by symbolic link
+rm /opt/MIRACUM-Pipe/conf/custom.yaml
+chmod 777 /opt/MIRACUM-Pipe/conf
+rm -rf /opt/MIRACUM-Pipe/assets/*
+chmod 777 /opt/MIRACUM-Pipe/assets
+rm -rf /opt/MIRACUM-Pipe/databases
+chmod 777 /opt/MIRACUM-Pipe
+rm -rf /opt/MIRACUM-Pipe/tools/annovar
+rm -rf /opt/MIRACUM-Pipe/tools/gatk
+chmod 777 /opt/MIRACUM-Pipe/tools
+rm /opt/MIRACUM-Pipe/programs.cfg.sh
+cp /programs.cfg.sh /opt/MIRACUM-Pipe/programs.cfg.sh
+rm /programs.cfg.sh
+chmod +x /opt/MIRACUM-Pipe/programs.cfg.sh
+rm /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
+cp /MutAna_tools.R /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
+rm /MutAna_tools.R
+
 # Final cleanup
 apt-get remove wget git -y
 apt-get clean autoclean
 apt-get autoremove --yes
 rm -rf /var/lib/{apt,dpkg,cache,log}/
 
+%runscript
+
+echo "preparing container by setting symbolic links:"
+echo $INPUTPATH
+echo $OUTPUTPATH
+echo $REFERENCESPATH
+echo $DATABASEPATH
+echo $ANNOVARPATH
+echo $GATKPATH
+
+# set symbolic links
+ln -s $CUSTOMCONFIGFILE /opt/MIRACUM-Pipe/conf/custom.yaml
+ln -s $INPUTPATH /opt/MIRACUM-Pipe/assets/input
+ln -s $OUTPUTPATH /opt/MIRACUM-Pipe/assets/output
+ln -s $REFERENCESPATH /opt/MIRACUM-Pipe/assets/references
+ln -s $DATABASEPATH /opt/MIRACUM-Pipe/databases
+ln -s $ANNOVARPATH /opt/MIRACUM-Pipe/tools/annovar
+ln -s $GATKPATH /opt/MIRACUM-Pipe/tools/gatk
+ln -s $FUSIONCATCHERPATH /opt/MIRACUM-Pipe/tools/fusioncatcher/data
+ln -s $SCRATCH /myscratch
+
+# start MIRACUM-Pipe with passed arguments
+/opt/MIRACUM-Pipe/miracum_pipe.sh $OPTARGS
+
 %labels
 
 Author n.reimer@uni-luebeck.de
-Version 1.0
+Version 1.1
