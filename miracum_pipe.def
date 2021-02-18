@@ -1,5 +1,5 @@
-Bootstrap: localimage
-From: ./miracum-pipe-rna.sif
+Bootstrap: library
+From: debian:10
 
 %files
 
@@ -7,6 +7,29 @@ From: ./miracum-pipe-rna.sif
 ./MutAna_tools.R
 
 %post
+
+# MIRACUM-Pipe Version
+export VERSION=9eb4342e18ea0e09e2d92fb6d78f0645f6e1b005
+
+# install git
+apt-get update
+apt-get install -y --no-install-recommends git ca-certificates wget libcairo2-dev libxt-dev locales-all
+
+# git MIRACUM-Pipe with submodules from GitHub
+git clone --recurse-submodules https://github.com/AG-Boerries/MIRACUM-Pipe.git /opt/MIRACUM-Pipe
+cd /opt/MIRACUM-Pipe
+git checkout $VERSION
+
+# Delete databases, they will be imported using overlay
+rm -rf /opt/MIRACUM-Pipe/databases/*
+
+# Call install routines
+bash /opt/MIRACUM-Pipe/debian/setup.sh
+Rscript /opt/MIRACUM-Pipe/RScripts/install_packages.R
+bash /opt/MIRACUM-Pipe/tools/install.sh
+
+# CA Certificates for RCurl
+wget https://curl.haxx.se/ca/cacert.pem -O "/usr/local/lib/R/site-library/RCurl/CurlSSL/ca-bundle.crt"
 
 # remove directories that will be replaced by symbolic link
 rm /opt/MIRACUM-Pipe/conf/custom.yaml
@@ -25,7 +48,14 @@ chmod +x /opt/MIRACUM-Pipe/programs.cfg.sh
 rm /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
 cp /MutAna_tools.R /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
 rm /MutAna_tools.R
+rm -rf /opt/MIRACUM-Pipe/tools/fusioncatcher/data
+chmod 777 /opt/MIRACUM-Pipe/tools/fusioncatcher
 
+# make sure all scripts are executable
+chmod +x /opt/MIRACUM-Pipe/*.sh
+
+# Final cleanup
+apt-get remove wget git -y
 apt-get clean autoclean
 apt-get autoremove --yes
 rm -rf /var/lib/{apt,dpkg,cache,log}/
@@ -39,6 +69,8 @@ echo $REFERENCESPATH
 echo $DATABASEPATH
 echo $ANNOVARPATH
 echo $GATKPATH
+echo $FUSIONCATCHERPATH
+echo $SCRATCH
 
 # set symbolic links
 ln -s $CUSTOMCONFIGFILE /opt/MIRACUM-Pipe/conf/custom.yaml
@@ -53,3 +85,8 @@ ln -s $SCRATCH /myscratch
 
 # start MIRACUM-Pipe with passed arguments
 /opt/MIRACUM-Pipe/miracum_pipe.sh $OPTARGS
+
+%labels
+
+Author n.reimer@uni-luebeck.de
+Version 1.1

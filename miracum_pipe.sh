@@ -13,7 +13,7 @@ function usage() {
   exit 1
 }
 
-IMAGE_FILE="${SCRIPTPATH}/miracum-pipe-sl.sif"
+IMAGE_FILE="${SCRIPTPATH}/miracum_pipe.sif"
 readonly VALID_PROTOCOLS=("wes panel tumorOnly")
 
 while getopts t:p:d:n:fsh option; do
