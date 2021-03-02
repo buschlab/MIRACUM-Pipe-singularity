@@ -3,9 +3,7 @@
 This repo offers a framework to easily work with the singularity version of [MIRACUM-Pipe](https://github.com/AG-Boerries/MIRACUM-Pipe).
 
 To setup singularity on your machine you may take a look that our [setup script](https://github.com/buschlab/HowTos/blob/master/Singularity/setupSingularity.sh).
-You can build the image either youself using the command `singularity build miracum-pipe.sif miracum-pipe.def` or download the latest prebuilt image from the [release section](https://github.com/buschlab/MIRACUM-Pipe-singularity/releases) to the root of this repository. Either way you have to setup additional databases which will be described in the following sections.
-
-If your system administrator has disabled user bindings, you may want to use the slightly modified versions `miracum-pipe-sl.def` and `miracum_pipe-sl.sh` that uses symlinks.
+You need to build the image youself by executing the command `singularity build miracum_pipe.sif miracum_pipe.def` ) in the root of this repository. Either way you have to setup additional databases which will be described in the following sections.
 
 ## Disclaimer
 
