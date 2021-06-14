@@ -3,16 +3,18 @@ From: debian:10
 
 %files
 
-./programs.cfg.sh
 ./MutAna_tools.R
 
 %post
 
 # MIRACUM-Pipe Version
-export VERSION=f555bd5a07627295b32f65be5501b7bbd2617cc6
+export VERSION=db44b874523fcda32004a62a1136315708e9da43
+
+# apply updates to baseimage
+apt-get update
+apt-get install --only-upgrade -y apt base-files debian-archive-keyring libapt-pkg5.0 libgnutls30 libp11-kit0 libsystemd0 libudev1 libzstd1 perl-base
 
 # install git
-apt-get update
 apt-get install -y --no-install-recommends git ca-certificates wget libcairo2-dev libxt-dev locales-all
 
 # git MIRACUM-Pipe with submodules from GitHub
@@ -41,10 +43,6 @@ chmod 777 /opt/MIRACUM-Pipe
 rm -rf /opt/MIRACUM-Pipe/tools/annovar
 rm -rf /opt/MIRACUM-Pipe/tools/gatk
 chmod 777 /opt/MIRACUM-Pipe/tools
-rm /opt/MIRACUM-Pipe/programs.cfg.sh
-cp /programs.cfg.sh /opt/MIRACUM-Pipe/programs.cfg.sh
-rm /programs.cfg.sh
-chmod +x /opt/MIRACUM-Pipe/programs.cfg.sh
 rm /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
 cp /MutAna_tools.R /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
 rm /MutAna_tools.R
