@@ -7,7 +7,7 @@ You need to build the image youself by executing the command `singularity build 
 
 ## Disclaimer
 
-MIRACUM-Pipe is intended for research use only!
+MIRACUM-Pipe is intended for research use only and not for patient treatment, diagnosis and/or medical records!
 
 ## Setup and installation
 
