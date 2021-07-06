@@ -8,11 +8,11 @@ From: debian:10
 %post
 
 # MIRACUM-Pipe Version
-export VERSION=523d9189c7ffe42ef5b0585436c3a7c9a26229bd
+export VERSION=e6bddee29cea7c4204feb93ef990e64844ffaf15
 
 # apply updates to baseimage
 apt-get update
-apt-get install --only-upgrade -y apt base-files debian-archive-keyring libapt-pkg5.0 libgnutls30 libp11-kit0 libsystemd0 libudev1 libzstd1 perl-base
+apt-get install --only-upgrade -y apt base-files debian-archive-keyring libapt-pkg5.0 libgcrypt20 libgnutls30 liblz4-1 libp11-kit0 libsystemd0 libudev1 libzstd1 perl-base
 
 # install git
 apt-get install -y --no-install-recommends git ca-certificates wget libcairo2-dev libxt-dev locales-all
