@@ -17,6 +17,13 @@ databases/hotspots_v2.xls
 assets/*
 !assets/*/.gitkeep
 
+# Tools
+tools/gatk4/*
+!tools/gatk4/.gitkeep
+
+tools/fusioncatcher/*
+!tools/fusioncatcher/.gitkeep
+
 # COSMIC
 *.vcf
 *.tsv
