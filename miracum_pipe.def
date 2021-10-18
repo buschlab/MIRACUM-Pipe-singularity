@@ -8,7 +8,7 @@ From: debian:10
 %post
 
 # MIRACUM-Pipe Version
-export VERSION=d399bef1fd7408d3db825204dbe700a870794b61
+export VERSION=71939bcb80141f9f6a1d85f9d5b4df0c43840caf
 
 # apply updates to baseimage
 apt-get update
