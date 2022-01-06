@@ -16,7 +16,7 @@ We prepared this project in a way which allows you to easily add the specific co
 Prior running the setup script, some components need to be installed manually:
 
 - tools
-  - [annovar](http://download.openbioinformatics.org/annovar_download_form.php)
+  - [annovar](https://www.openbioinformatics.org/annovar/annovar_download_form.php)
 
 - databases
   - [hallmark gene-sets](http://software.broadinstitute.org/gsea/msigdb/)
@@ -28,27 +28,19 @@ Prior running the setup script, some components need to be installed manually:
     - Actionalbe Genes, file: oncokb_biomarker_drug_associations.tsv
     - Cancer Genes, file: cancerGeneList.tsv
 
-For running MIRACUM-Pipe the hallmark gene-sets, download link above, need to be formated as a list and stored in a RData file. Inside the `setup.sh` we provide a R script performing the necessary steps. Therefore, a working [R](https://cran.r-project.org/web/packages/GSA/index.html) togther with the R package [GSA](https://cran.r-project.org/web/packages/GSA/index.html) has to be installed.
+For running MIRACUM-Pipe the hallmark gene-sets, download link above, need to be formated as a list and stored in a RData file. Inside the `setup.sh` we provide a R script performing the necessary steps. Therefore, a working [R](https://cran.r-project.org/web/packages/GSA/index.html) together with the R package [GSA](https://cran.r-project.org/web/packages/GSA/index.html) has to be installed.
 
 For the tool annovar you need the download link. Follow the url above and request the link by filling out the form. They will send you an email.
 While `setup.sh` is running you'll be asked to enter this download link. Alternatively you could also install annovar by manually extracting it into the folder `tools`.
 To install the databases follow the links, register and download the listed files. Just place them into the folder `databases` of your cloned project.
 
-Next, run the setup script. We recommend to install everything, which does **not** include the example and reference data. There are also options to install and setup parts:
+Next, run the setup script. We recommend to install everything, which does also include the example and reference data. There are also options to install and setup parts:
 
 ```bash
 ./setup.sh -t all -m /path/to/h.all.v.7.1.entrez.gmt -a /path/to/annovar.latest.tar.gz
 ```
 
-See `setup.sh -h` to list the available options. By default, we do not install the reference genome as well as our example. If you want to install it run
-
-```bash
-# download and setup reference genome
-./setup.sh -t ref
-
-# download and setup example data
-./setup.sh -t example
-```
+See `setup.sh -h` to list the available options. By default, we do install the reference genome as well as our example. If you want to install it run
 
 - annotation rescources for annovar
   - create a database for the latest COSMIC release (according to the [annovar manual](http://annovar.openbioinformatics.org/en/latest/user-guide/filter/#cosmic-annotations))
@@ -106,7 +98,7 @@ protocol: wes # possible values are either wes for whole exome sequencing, requi
 
 #### Example for whole-exome sequencing; protocol parameter: wes
 
-Place the germline R1 and R2 files as well as the tumor files (R1 and R2) into the *input* folder. Either name them `germline_R{1/2}.fastqz.gz` and `tumor_R{1/2}.fastq.gz` or adjust your `patient.yaml` accordingly:
+Place the germline R1 and R2 files as well as the tumor files (R1 and R2) into the *input* folder. Either name them `germline_R{1/2}.fastq.gz` and `tumor_R{1/2}.fastq.gz` or adjust your `patient.yaml` accordingly:
 
 ```yaml
 [..]
@@ -130,15 +122,6 @@ common:
     tumor_R1: tumor_R1.fastq.gz
     tumor_R2: tumor_R2.fastq.gz
   protocol: panel
-```
-
-Additionally, a flatReference, i.e. a control, file has to be supplied for cnvkit to identify CNVs. The file has to be constructed according to the used capture kit/sequencing kit. Building the file is described on the developer homepage [cnvkit](https://cnvkit.readthedocs.io/en/stable/pipeline.html#with-no-control-samples). For each sequencing kit respectively panel, the flatReference file has to be constructed only once and it can be re-used for all panels of the same kind.
-
-```yaml
-[..]
-tools:
-  cnvkit:
-    flatReference: FlatReference_TruSight_Tumor.cnn
 ```
 
 #### Example for tumor only analysis; protocol parameter: tumorOnly
@@ -167,11 +150,19 @@ common:
   cpucores: 12
   
 reference:
-  genome: hg19.fa
+  # define reference genome (located in references/Genome incl. indices)
+  genome: genome.fa
+  # file containing the length of the chromosomes (located in references/chromosomes)
   length: hg19_chr.len
+  # reference wig file for HRD calculation; if not present its generated (to be put/created in databases)
+  hrdRef: hg19all.wig.gz
+  # microsatellite sites for msisnesor-pro; if not present its generated (to be put/created in databases)
+  microsatelliteSites: microsatellite_sites_hg19
+  # database of known SNPs (located in databses/dbSNP)
   dbSNP: snp150hg19.vcf.gz
+  # Mappability file needed for calling CNVs with ControlFREEC (located in reference/mappability)
   mappability: out100m2_hg19.gem
-  sequencing:
+  sequencing: # all located in references/sequencing
     # target region covered by the sequencer in .bed format
     captureRegions: V5UTR.bed
     # file containing all the covered genes as HUGO Symbols
@@ -182,6 +173,11 @@ reference:
     captureRegionName: V5UTR
     # target capture correlation factors for mutation signature analysis
     captureCorFactors : targetCapture_cor_factors.rda
+    # covered exons by capture kit; basically intersection of exome with capture regions
+    # e.g. bedtools intersect -a targets.bed -b bed_exons_hg19.bed > exons_Routine.bed -u
+    coveredExons: exons_5UTR.bed
+    # positive list for genes in germline to be reported (e.g. by ACMG)
+    # actionableGenes: actionable_genes.txt
 ```
 
 ### Run the pipeline
@@ -305,25 +301,34 @@ The following annotation databases are used during runtime of MIRACUM-Pipe. The 
 - InterVar
 - COSMIC v91
 - OncoKB
-  - Actionalbe Genes
+  - Actionable Genes
   - Cancer Genes
 - FANNSDB (Condel)
 - TARGET DB
 
 ## Limitations
 
-MIRACUM-Pipe is currently test for the whole-exome protocol for the capture kits V5UTR and V6. The tool used for mutation signature analysis is currently only compatible with the following kits:
+MIRACUM-Pipe is currently tested for the whole-exome protocol for the capture kits V5UTR and V6. The tool [YAPSA](https://www.bioconductor.org/packages/release/bioc/html/YAPSA.html) used for mutation signature analysis by default only provdides correction factors with the following kits:
 
 - Agilent4withUTRs
 - Agilent4withoutUTRs
 - Agilent5withUTRs
 - Agilent5withoutUTRs
 - SomSig
-- hs37d5
 - IlluminaNexteraExome
 - Agilent6withoutUTRs
 - Agilent6withUTRs
 - Agilent7withoutUTRs
+
+However, using our [script](https://github.com/nr23730/cbioportal-tools/blob/master/targetCapture_cor_factors/computeCaptureKitCorrectionFactor.R) we added support for the following capture kits:
+
+- Agilent8withUTRs (V8UTR)
+- Twist Human Core Exome (TwistCoreExome)
+- Twist Comprehensive Exome (TwistComprehensiveExome)
+- xGen Exome Research Panel v1 (xGenExomeResearchPanelV1)
+- xGen Exome Research Panel v2 (xGenExomeResearchPanelV2)
+
+This extension should be considered is not reviewed/approved by the YAPSA developers and therefore should be considered as *unofficially supported*.
 
 The name of the kit has to be supplied with the *captureRegionName* parameter. We introduced abbreviations for Agilent6withoutUTRs (V6), Agilent6withUTRs (V6UTR) and Agilent5withUTRs (V5UTR) which could be used.
 
