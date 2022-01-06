@@ -9,7 +9,7 @@ function usage() {
   singularity exec $1 "${DIR_MIRACUM}"/miracum_pipe.sh -h
   echo ""
   echo "additional optional flags:"
-  echo "  -n                    singularity image file (default is miracum-pipe-sl.sif)"
+  echo "  -n                    singularity image file (default is miracum_pipe.sif)"
   exit 1
 }
 
@@ -81,6 +81,7 @@ export SINGULARITYENV_REFERENCESPATH=${SCRIPTPATH}/assets/references
 export SINGULARITYENV_DATABASEPATH=${SCRIPTPATH}/databases
 export SINGULARITYENV_ANNOVARPATH=${SCRIPTPATH}/tools/annovar
 export SINGULARITYENV_GATKPATH=${SCRIPTPATH}/tools/gatk
+export SINGULARITYENV_GATK4PATH=${SCRIPTPATH}/tools/gatk4
 export SINGULARITYENV_FUSIONCATCHERPATH=${SCRIPTPATH}/tools/fusioncatcher/data
 export SINGULARITYENV_OPTARGS=${opt_args}
 export SINGULARITYENV_SCRATCH=${SCRATCH}

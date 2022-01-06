@@ -8,7 +8,7 @@ From: debian:10
 %post
 
 # MIRACUM-Pipe Version
-export VERSION=71939bcb80141f9f6a1d85f9d5b4df0c43840caf
+export VERSION=8f5578141218f8a6e9d01a358ba97e269584dbfb
 
 # apply updates to baseimage
 apt-get update
@@ -18,9 +18,10 @@ apt-get install --only-upgrade -y apt base-files debian-archive-keyring libapt-p
 apt-get install -y --no-install-recommends git ca-certificates wget libcairo2-dev libxt-dev locales-all
 
 # git MIRACUM-Pipe with submodules from GitHub
-git clone --recurse-submodules https://github.com/AG-Boerries/MIRACUM-Pipe.git /opt/MIRACUM-Pipe
+git clone https://github.com/AG-Boerries/MIRACUM-Pipe.git /opt/MIRACUM-Pipe
 cd /opt/MIRACUM-Pipe
 git checkout $VERSION
+git submodule update --init --recursive
 
 # Delete databases, they will be imported using overlay
 rm -rf /opt/MIRACUM-Pipe/databases/*
@@ -42,6 +43,7 @@ rm -rf /opt/MIRACUM-Pipe/databases
 chmod 777 /opt/MIRACUM-Pipe
 rm -rf /opt/MIRACUM-Pipe/tools/annovar
 rm -rf /opt/MIRACUM-Pipe/tools/gatk
+rm -rf /opt/MIRACUM-Pipe/tools/gatk4
 chmod 777 /opt/MIRACUM-Pipe/tools
 rm /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
 cp /MutAna_tools.R /opt/MIRACUM-Pipe/RScripts/MutAna_tools.R
@@ -67,6 +69,7 @@ echo $REFERENCESPATH
 echo $DATABASEPATH
 echo $ANNOVARPATH
 echo $GATKPATH
+echo $GATK4PATH
 echo $FUSIONCATCHERPATH
 echo $SCRATCH
 
@@ -78,6 +81,7 @@ ln -s $REFERENCESPATH /opt/MIRACUM-Pipe/assets/references
 ln -s $DATABASEPATH /opt/MIRACUM-Pipe/databases
 ln -s $ANNOVARPATH /opt/MIRACUM-Pipe/tools/annovar
 ln -s $GATKPATH /opt/MIRACUM-Pipe/tools/gatk
+ln -s $GATK4PATH /opt/MIRACUM-Pipe/tools/gatk4
 ln -s $FUSIONCATCHERPATH /opt/MIRACUM-Pipe/tools/fusioncatcher/data
 ln -s $SCRATCH /myscratch
 
