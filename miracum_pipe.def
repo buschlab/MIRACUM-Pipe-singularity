@@ -18,9 +18,10 @@ apt-get install --only-upgrade -y apt base-files debian-archive-keyring libapt-p
 apt-get install -y --no-install-recommends git ca-certificates wget libcairo2-dev libxt-dev locales-all
 
 # git MIRACUM-Pipe with submodules from GitHub
-git clone --recurse-submodules https://github.com/AG-Boerries/MIRACUM-Pipe.git /opt/MIRACUM-Pipe
+git clone https://github.com/AG-Boerries/MIRACUM-Pipe.git /opt/MIRACUM-Pipe
 cd /opt/MIRACUM-Pipe
 git checkout $VERSION
+git submodule update --init --recursive
 
 # Delete databases, they will be imported using overlay
 rm -rf /opt/MIRACUM-Pipe/databases/*

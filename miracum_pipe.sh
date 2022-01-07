@@ -9,7 +9,7 @@ function usage() {
   singularity exec $1 "${DIR_MIRACUM}"/miracum_pipe.sh -h
   echo ""
   echo "additional optional flags:"
-  echo "  -n                    singularity image file (default is miracum-pipe-sl.sif)"
+  echo "  -n                    singularity image file (default is miracum_pipe.sif)"
   exit 1
 }
 
